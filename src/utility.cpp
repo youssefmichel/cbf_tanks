@@ -1,5 +1,5 @@
 
-#include "Utility.h"
+#include "utility.h"
 
 namespace special_math_functions {
 	Mat Skew(const Vec &v) {

@@ -17,7 +17,7 @@
 #include <OSAbstraction.h>
 
 
-#include "Utility.h"
+#include "utility.h"
 
 #include "min_jerk.h"
 #include "dhdc.h"
@@ -56,6 +56,7 @@ using  namespace  Eigen;
 
 
 int startCartImpedanceCtrl(FastResearchInterface *fri, float *commCartPose) ;
+int startGravityCompensation(FastResearchInterface *fri, float duration) ;
 
 int startJointImpedanceCtrl(FastResearchInterface *fri, float *commJointPosition) ;
 int loadVectorMatrixFromFile (std::string fileName, int cols, vector<vector<float>> &outMat) ;

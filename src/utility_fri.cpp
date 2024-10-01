@@ -1,7 +1,60 @@
 
 
 
-#include "UtilityFunctions.h"
+#include "utility_fri.h"
+
+int startGravityCompensation(FastResearchInterface *FRI, float duration) {
+
+    float  JointStiffnessValues[LBR_MNJ],
+            EstimatedExternalCartForcesTorques[FRI_CART_VEC],
+            EstimatedExternalJointTorques[LBR_MNJ],
+            currentCartPose[FRI_CART_FRM_DIM] ,
+            currentJointPosition[LWR_JNT_NUM];
+
+     if(startJointImpedanceCtrl(FRI, currentJointPosition)==0){
+
+         printf("Gravity compensation Started \n");
+         // Set stiffness
+         for(int i = 0; i < LWR_JNT_NUM; i++){
+             JointStiffnessValues[i] = (float)MIN_STIFFNESS; // max stiffness 0-2 -> 2000.0, max 3-5 200.0
+         }
+
+         FRI->SetCommandedJointStiffness(JointStiffnessValues);
+         int it_= 0 ;
+
+         int LoopValue = int(duration / FRI->GetFRICycleTime());
+         int done_g=1 ;
+         while (FRI->IsMachineOK()  && (it_<LoopValue) && (done_g == 1) ) {
+
+             FRI->WaitForKRCTick();
+
+             if (dhdKbHit() && dhdKbGet()=='q') done_g = -1;
+
+
+             FRI->GetMeasuredJointPositions(currentJointPosition);
+             FRI->SetCommandedJointPositions(currentJointPosition);
+             FRI->GetMeasuredCartPose(currentCartPose);
+             FRI->SetCommandedCartPose(currentCartPose);
+
+             Vec x_curr=GetTranslation(currentCartPose) ;
+             Matrix3d R_curr=GetRotationMatrix(currentCartPose) ;
+             Quaterniond q_curr(R_curr) ;
+
+             FRI->GetEstimatedExternalCartForcesAndTorques(EstimatedExternalCartForcesTorques);
+             FRI->GetEstimatedExternalJointTorques(EstimatedExternalJointTorques);
+
+             it_++;
+
+         }
+         cout<<"Joint Angles: \n "  << float_2_Vec(currentJointPosition,7) *(180/PI)	<<endl ;
+         cout<<"Cartesian Position: \n "  << GetTranslation(currentCartPose)<<endl ;
+
+
+
+     }
+
+
+}
 
 int startCartImpedanceCtrl(FastResearchInterface *fri, float *commCartPose){
     unsigned int controlScheme = FastResearchInterface::CART_IMPEDANCE_CONTROL;

@@ -1,7 +1,7 @@
 #ifndef MINJERK_H_
 #define MINJERK_H_
 
-#include "Utility.h"
+#include "utility.h"
 
 
 class MinJerk {

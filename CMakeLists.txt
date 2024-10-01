@@ -21,7 +21,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   roslib
   std_msgs
-  #hierarchical_varimpedance_control
+
 )
 
 
@@ -77,19 +77,16 @@ set(LIB_REHEARSE /home/hwadong/Youssef/OptimizationLibraryC++/Rehearse/lib)
 set(INCLUDE_QP  /home/hwadong/Youssef/OptimizationLibraryC++/qpOASES/include)
 set(LIB_QP /home/hwadong/Youssef/OptimizationLibraryC++/qpOASES/bin)
 
-set(LIB_HVIC /home/hwadong/catkin_ws/src/hierarchical_varimpedance_control/include)
-
-
-
 
 set( sources_kuka
 
-     src/RunTrajectorySimple.cpp
-     src/hcr_force_comp/ft_comp.cpp
-     src/UtilityFunctions.cpp
+     src/run_trajectory_simple.cpp
+
+     src/utility_fri.cpp
+     src/utility.cpp
      src/quatUtils.cpp
-     src/CbfTank.cpp
-     src/firstorderTank.cpp
+     src/cbf_tank.cpp
+     src/first_order_tank.cpp
      src/min_jerk.cpp
 )
 
@@ -101,9 +98,8 @@ include_directories(
     ${INCLUDE_SHARE}
     ${INCLUDE_HD}
     ${INCLUDE_REHEARSE}
-    src/hcr_force_comp
     ${INCLUDE_QP}
-    #${LIB_HVIC}# Not needed for successful build, but just to parse the project @TODO:SOLVE
+
 
 )
 
@@ -122,7 +118,7 @@ add_definitions( -D__LINUX__ )
 
 
 #add_executable(cbftank_main  ${sources_kuka})
-add_executable(cbftank_main src/cbftank_main.cpp)
+add_executable(var_stiff_node src/tasks/var_stiff_node.cpp)
 add_executable(force_control_node src/tasks/force_control_node.cpp)
 add_executable(KE_limitation_node src/tasks/KE_limitation_node.cpp)
 
@@ -135,7 +131,7 @@ add_executable(KE_limitation_node src/tasks/KE_limitation_node.cpp)
 #    ${PROJECT_NAME}
 #    )
 
-target_link_libraries(cbftank_main
+target_link_libraries(var_stiff_node
     ${catkin_LIBRARIES}
      ${PROJECT_NAME}
     Threads::Threads
