@@ -3,7 +3,7 @@
 
   <group if="$(eval task == 'freemotion')">
     <rosparam command="load" file="$(find cbf_tanks_pkg)/config/control_param.yaml"/>
-    <rosparam command="load" file="$(find cbf_tanks_pkg)/config/tank_param.yaml"/>
+    <rosparam command="load" file="$(find cbf_tanks_pkg)/config/var_stiff_task_param.yaml"/>
     <param name="tank_type" type="string" value="$(arg tank_type)" allowed="first|firstcbf|cbf|none"/>
     <node name="cbftank_main" pkg="cbf_tanks_pkg" type="cbftank_main" output="screen" />
   </group>
