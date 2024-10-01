@@ -1,0 +1,6 @@
+Pow_max: -0.8
+EngTank_min: 9.6
+EngTank_init: 10
+Tankgain: 180
+cbf_rate: 14
+f_des: -15
