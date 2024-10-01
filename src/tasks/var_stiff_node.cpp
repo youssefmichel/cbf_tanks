@@ -158,6 +158,12 @@ int main(int argc, char *argv[])
                     order = 2;
                 }
 
+
+                realtype K_transl=800 ;
+                if(! ros::param::get("K_transl",K_transl)) {
+                    ROS_WARN("Stiffness Param not found !!");
+                }
+
                 realtype  dt=FRI->GetFRICycleTime() ;
 
                 CBFTank *MyCBF_Tank=new CBFTank() ;
@@ -222,7 +228,7 @@ int main(int argc, char *argv[])
                     x_dot_filt_prev=x_dot_filt ;
 
                     min_jerk_profile.Update(time_elap);
-                    Vec fac= 500*min_jerk_profile.GetDesiredPos() ;
+                    Vec fac= K_transl*min_jerk_profile.GetDesiredPos() ;
                     realtype k_des= fac(0);
                     Vec F_des= k_des* (x_d- x) ;
                     realtype Pow_des= x_dot_filt.transpose()* F_des   ;

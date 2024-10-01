@@ -4,3 +4,6 @@ EngTank_init: 10
 Tankgain: 180
 cbf_rate: 14
 f_des: -15
+D_transl: 40
+K_transl: 800
+

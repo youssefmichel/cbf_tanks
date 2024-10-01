@@ -165,22 +165,19 @@ int main(int argc, char *argv[])
 
             // Kinetic Energy Limitation
             FRI->GetMeasuredCartPose(currentCartPose);
-            printf("       Activate tank ? \n");
-            char n ;
-            n	=	WaitForKBCharacter(NULL);
-            printf("\n\n\n");
-            std::string ss; ss.push_back(n);
-
             if(startCartImpedanceCtrl(FRI,currentCartPose)==0){
 
                 realtype KE_max=0.5 ;
                 if(! ros::param::get("KE_max",KE_max)) {
                     ROS_WARN("Max Kin. Energy Param not found !!");
-
+                }
+                std::string tank_type="none" ;
+                if(! ros::param::get("tank_type",tank_type)) {
+                    ROS_WARN("Tank Type Param not found !!");
                 }
 
                 int ActivateTank=1 ;
-                if(n=='1'){
+                if(tank_type=="cbf"){
                     ActivateTank=1 ;
                 }
                 else{
@@ -193,6 +190,12 @@ int main(int argc, char *argv[])
                 FRI->GetMeasuredJointPositions(currentJointPosition);
                 FRI->GetMeasuredCartPose(currentCartPose);
                 FRI->GetMeasuredCartPose( CartPose_init);
+
+
+                realtype K_transl=800 ;
+                if(! ros::param::get("K_transl",K_transl)) {
+                    ROS_WARN("Stiffness Param not found !!");
+                }
 
                 for (i = 0; i < NUMBER_OF_CART_DOFS; i++)
                 {
@@ -258,9 +261,9 @@ int main(int argc, char *argv[])
                     Vec q_dot_filt=low_pass( q_dot, q_dot_filt_prev,20,FRI->GetFRICycleTime() ) ;
                     q_dot_filt_prev=q_dot_filt ;
                     min_jerk_profile.Update(time_elap);
-                    Vec fac= 500*min_jerk_profile.GetDesiredPos() ;
+                    Vec fac= K_transl*min_jerk_profile.GetDesiredPos() ;
                     realtype k_des= fac(0);
-                    realtype D=2*0.7*sqrt(500) ;
+                    realtype D=2*0.7*sqrt(K_transl) ;
 
                     Vec F_des= k_des* (x_d- x) ;
                     realtype Pow_des= x_dot_filt.transpose()* F_des   ;

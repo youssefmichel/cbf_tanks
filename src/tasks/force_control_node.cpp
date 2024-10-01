@@ -74,15 +74,11 @@ int main(int argc, char *argv[])
         case 'O': {
             // move to initial desired orientation
             std::vector <double> v ;
-            Quaterniond q_init_VSDS ;
             ROS_INFO("Going to a Desired Full Pose with a Min. Jerk Trajectory") ;
             if (! ros::param::get("q_init",v)){
                 ROS_WARN("q_init Param Not Found !!") ;
             }
-            q_init_VSDS.w()=0.0018134 ;
-            q_init_VSDS.x()=0.858707 ;
-            q_init_VSDS.y()=0.512366 ;
-            q_init_VSDS.z()=-0.00999159	 ;
+
             FRI->GetMeasuredCartPose(currentCartPose);
             Vec x_d=GetTranslation(currentCartPose) ;
             x_d(2)=x_d(2)+0.1  ;
@@ -112,16 +108,13 @@ int main(int argc, char *argv[])
             if(startCartImpedanceCtrl(FRI,currentCartPose)==0){
 
                 FRI->GetMeasuredCartPose(currentCartPose);
+                std::string tank_type="none" ;
+                if(! ros::param::get("tank_type",tank_type)) {
+                    ROS_WARN("Tank Type Param not found !!");
+                }
 
-                printf("    Activate tank ? \n");
-                char n ;
-                n	=	WaitForKBCharacter(NULL);
-                printf("\n\n\n");
-
-                std::string ss; ss.push_back(n);
                 int ActivateTank=1 ;
-
-                if(n=='1'){
+                if(tank_type=="cbf"){
                     ActivateTank=1 ;
                 }
                 else{
@@ -132,9 +125,13 @@ int main(int argc, char *argv[])
                 if(! ros::param::get("f_des",f_des)) {
                     ROS_WARN("Desired Force Param not found !!");
                 }
-                realtype D=100 ;
-                if(! ros::param::get("D_transl",D)) {
-                    ROS_WARN("Desired Force Param not found !!");
+                realtype D_transl=40 ;
+                if(! ros::param::get("D_transl",D_transl)) {
+                    ROS_WARN("Damping Param not found !!");
+                }
+                realtype K_transl=800 ;
+                if(! ros::param::get("K_transl",K_transl)) {
+                    ROS_WARN("Stiffness Param not found !!");
                 }
 
                 Vec F_des= Vec::Zero(3) ; F_des(2) = f_des;
@@ -173,7 +170,7 @@ int main(int argc, char *argv[])
                 realtype time_elap=0 ;
                 int done = -1 ;
                 MinJerk min_jerk_profile=MinJerk(dt,3, x0 ,x_d);
-                Vec x_d_prev=x0 ;
+
 
                 while(time_elap<T_max && (done==-1)) {
 
@@ -197,7 +194,7 @@ int main(int argc, char *argv[])
 
                     Vec x_d_act=x_d ;  x_d_act(1)=alpha_traj*x_d(1) ;
                     Mat SelecMat=Mat::Identity(3,3) ; SelecMat(2,2)=0 ;
-                    Vec F_act=SelecMat*(800*(x_d-x) - 40*x_dot_filt) + alpha_force *F_des ;
+                    Vec F_act=SelecMat*(K_transl*(x_d-x) - D_transl*x_dot_filt) + alpha_force *F_des ;
                     Vec  Impedance_Force_tool=Rot_mat.transpose()*F_act ;
 
                     for(int i=0;i <3;i++){

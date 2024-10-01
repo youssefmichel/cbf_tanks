@@ -4,3 +4,5 @@ EngTank_init: 10
 Tankgain: 100
 cbf_rate: 23
 KE_max: 0.45
+K_transl: 500
+

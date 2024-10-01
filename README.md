@@ -20,7 +20,7 @@ https://ieeexplore.ieee.org/document/9669000
 1) To use the package, simply clone the repo. into your catkin_ws/src
 
 
-2) Then, update your CMakeLists.txt depending on the lib directories for the H.D and the Kuka, namely the following variables
+2) Then, update your CMakeLists.txt with the directory of the `qpOASES` library, namely the following variables
 
         * INCLUDE_QP: yourpathToqpOASES/include
         * LIB_QP: yourpathToqpOASES/bin
@@ -47,14 +47,15 @@ Use the launch file, where you have to specify
    - `force` the force control task
    - `KE` : the kinetic energy limitation task
    - `freemotion`: The variable impedance controller with the smoothly rising stiffness
-```
-roslaunch cbf_tanks_pkg cbf_tank.launch task:=force
-```
-- Only for the `freemotion` task, we can further specify the tank type, since the other energy tank approaches are implemnted for this task only (for comparison reasons).
-   - `first`: Classical first order tanks
-   - `firstcbf` : first order tanks based on cbfs, proposed in https://ieeexplore.ieee.org/document/9669000
+- The tank type:
    - `cbf`: The proposed CBF tanks in [1]
    - `none`: No energy tank is activated
+```
+roslaunch cbf_tanks_pkg cbf_tank.launch task:=force tank_type:=cbf
+```
+- Only for the `freemotion` task, we can further specify other tank types, since the other energy tank approaches are implemnted for this task only (for comparison reasons).
+   - `first`: Classical first order tanks
+   - `firstcbf` : first order tanks based on cbfs, proposed in https://ieeexplore.ieee.org/document/9669000
 ```
 roslaunch cbf_tanks_pkg cbf_tank.launch task:=force tank_type:=first
 ```
