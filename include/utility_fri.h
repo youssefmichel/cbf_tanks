@@ -68,16 +68,16 @@ float low_pass(float signal, float prev_filt, float cutt_off, float cycle_time) 
 
 Mat GetRotationMatrix(float *CartPose) ;
 Vec GetTranslation(float *CartPose) ; 
-Mat Convert_Jacobian_2Mat(float ** Jacobian) ;
-Mat Convert_MassMat_2Mat(float ** Mass) ;
-Vec float_2_Vec(float *inp,int size) ;
-Mat Tool_2_World_Jacobian(Mat Jac_tool,Mat Rot) ;
-void Set_Desired_Pose_FRI(Mat Rot_d,Vec x_d,float *CartPose_d) ;
-Vec Quart_Orient_err(Mat R_a, Mat R_d);
+Mat ConvertJacobianToMat(float ** Jacobian) ;
+Mat ConvertMassMatToMat(float ** Mass) ;
+Vec float_To_Vec(float *inp,int size) ;
+Mat Tool_To_WorldJacobian(Mat Jac_tool,Mat Rot) ;
+void SetDesiredPoseFRI(Mat Rot_d,Vec x_d,float *CartPose_d) ;
+Vec QuartOrientErr(Mat R_a, Mat R_d);
 Vec low_pass(Vec signal, Vec prev_filt, float cutt_off, float cycle_time) ;
-vector< std::vector <float> > Kuka_MoveCartesian_MinJerk(FastResearchInterface *FRI, float tot_time, float dt, Vec x_df) ;
+vector< std::vector <float> > KukaMoveCartesianMinJerk(FastResearchInterface *FRI, float tot_time, float dt, Vec x_df) ;
 int MoveCartesian_MinJerk_FullPose(FastResearchInterface *FRI, float tot_time, float dt, Vec x_df, Quaterniond q_df) ;
-int TrackTrajectory_JointImpedance(FastResearchInterface *FRI,string des_traj_file, string Save_Data_dir ) ;
+int TrackTrajectoryJointImpedance(FastResearchInterface *FRI,string des_traj_file, string Save_Data_dir ) ;
 int RunJointTrajectory(FastResearchInterface *FRI, std::string InitJointPosFile) ;
 int RunJointTrajectory(FastResearchInterface *FRI, float *TargetJointValuesInRad) ;
 int RunCartesianTrajectory(FastResearchInterface *FRI, float *TargetJointValuesInRad) ;

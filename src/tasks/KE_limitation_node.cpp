@@ -234,7 +234,7 @@ int main(int argc, char *argv[])
                 }
 
                 FRI->GetMeasuredJointPositions(currentJointPosition);
-                Vec q_prev=float_2_Vec(currentJointPosition,7) ;
+                Vec q_prev=float_To_Vec(currentJointPosition,7) ;
                 Vec  q_dot_filt_prev= Vec::Zero(7) ;
 
                 while(time_elap<T_max && (done==-1)) {
@@ -245,9 +245,9 @@ int main(int argc, char *argv[])
                     FRI->GetMeasuredCartPose(currentCartPose);
                     Vec x=GetTranslation(currentCartPose) ;
                     FRI->GetMeasuredJointPositions(currentJointPosition);
-                    Vec q= float_2_Vec(currentJointPosition,7) ;
+                    Vec q= float_To_Vec(currentJointPosition,7) ;
                     FRI->GetCurrentMassMatrix(ptr_Inertia);
-                    Mat M=Convert_MassMat_2Mat(ptr_Inertia) ;
+                    Mat M=ConvertMassMatToMat(ptr_Inertia) ;
                     Mat Rot_mat=GetRotationMatrix(currentCartPose) ;
                     Vec x_dot=(x-x_prev)/dt ;
                     x_prev=x ;

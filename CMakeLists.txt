@@ -69,9 +69,7 @@ set(INCLUDE_SHARE /home/hwadong/workspace/share/include)
 set(LIB_HD /home/hwadong/Youssef/sdk-3.7.3/lib/release/lin-x86_64-gcc )
 set(INCLUDE_HD /home/hwadong/Youssef/sdk-3.7.3/include )
 
-#Optimization Rehearse Library , adjust to your PATH
-set(INCLUDE_REHEARSE  /home/hwadong/Youssef/OptimizationLibraryC++/Rehearse/include/coin)
-set(LIB_REHEARSE /home/hwadong/Youssef/OptimizationLibraryC++/Rehearse/lib)
+
 
 #QP Optimization QPOASES Library , adjust to your PATH
 set(INCLUDE_QP  /home/hwadong/Youssef/OptimizationLibraryC++/qpOASES/include)
@@ -81,7 +79,6 @@ set(LIB_QP /home/hwadong/Youssef/OptimizationLibraryC++/qpOASES/bin)
 set( sources_kuka
 
      src/run_trajectory_simple.cpp
-
      src/utility_fri.cpp
      src/utility.cpp
      src/quatUtils.cpp
@@ -97,17 +94,13 @@ include_directories(
     ${INCLUDE_FRI} 
     ${INCLUDE_SHARE}
     ${INCLUDE_HD}
-    ${INCLUDE_REHEARSE}
     ${INCLUDE_QP}
-
-
 )
 
 
 link_directories(
     ${LIB_FRI} 
     ${LIB_HD}
-    ${LIB_REHEARSE}
     ${LIB_QP}
 )
 
@@ -141,7 +134,7 @@ target_link_libraries(var_stiff_node
     -ldrd
     -ldhd
     -lusb-1.0
-     -lCbc -lrehearse -lClpSolver -lOsi -lOsiCbc -lOsiClp -lqpOASES
+    -lqpOASES
     )
 
 target_link_libraries(KE_limitation_node
@@ -154,7 +147,7 @@ target_link_libraries(KE_limitation_node
     -ldrd
     -ldhd
     -lusb-1.0
-     -lCbc -lrehearse -lClpSolver -lOsi -lOsiCbc -lOsiClp -lqpOASES
+     -lqpOASES
     )
 
 target_link_libraries(force_control_node
@@ -167,6 +160,6 @@ target_link_libraries(force_control_node
     -ldrd
     -ldhd
     -lusb-1.0
-     -lCbc -lrehearse -lClpSolver -lOsi -lOsiCbc -lOsiClp -lqpOASES
+     -lqpOASES
     )
 

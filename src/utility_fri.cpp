@@ -46,7 +46,7 @@ int startGravityCompensation(FastResearchInterface *FRI, float duration) {
              it_++;
 
          }
-         cout<<"Joint Angles: \n "  << float_2_Vec(currentJointPosition,7) *(180/PI)	<<endl ;
+         cout<<"Joint Angles: \n "  << float_To_Vec(currentJointPosition,7) *(180/PI)	<<endl ;
          cout<<"Cartesian Position: \n "  << GetTranslation(currentCartPose)<<endl ;
 
 
@@ -78,7 +78,7 @@ int startCartImpedanceCtrl(FastResearchInterface *fri, float *commCartPose){
     return 0;
 }
 
-vector< std::vector <float> > Kuka_MoveCartesian_MinJerk(FastResearchInterface *FRI, float tot_time, float dt, Vec x_df) {
+vector< std::vector <float> > KukaMoveCartesianMinJerk(FastResearchInterface *FRI, float tot_time, float dt, Vec x_df) {
     printf("Moving to Desired Cartesian Position with a minimum Jerk Trajectorty  \n");
     float CartStiffnessValues[FRI_CART_VEC],  CartDampingValues[FRI_CART_VEC], CommandedForcesAndTorques[FRI_CART_VEC] ;
     float currentCartPose[FRI_CART_FRM_DIM], commCartPose[FRI_CART_FRM_DIM],currentjointpos[7];
@@ -125,7 +125,6 @@ vector< std::vector <float> > Kuka_MoveCartesian_MinJerk(FastResearchInterface *
     //
     int done_g=1 ;
     while ( (FRI->IsMachineOK()) && err_x.norm()>tol && t<Max_time  ){
-        // while ( (FRI->IsMachineOK()) &&  t<Max_time  && done_g==1 ){
 
         FRI->WaitForKRCTick();
         X_pos_Vec.push_back( std::vector <float>() );
@@ -138,23 +137,23 @@ vector< std::vector <float> > Kuka_MoveCartesian_MinJerk(FastResearchInterface *
         FRI->GetMeasuredCartPose(currentCartPose);
         for (int i = 0; i < FRI_CART_VEC; i++){
             if(i<3){
-                //   CartStiffnessValues[i] =  GeneralFunction::smooth_transition_rising(t, 6.0, 0, 300);    ;
+
             }
 
             else{
-                //    CartStiffnessValues[i] = GeneralFunction::smooth_transition_rising(t, 5.0, 0, 200);
+
                 CartStiffnessValues[i] =200 ;
             }
 
         }
 
-        Set_Desired_Pose_FRI(R_d,x_d,commCartPose);
+        SetDesiredPoseFRI(R_d,x_d,commCartPose);
         FRI->SetCommandedCartStiffness(CartStiffnessValues);
 
 
         FRI->GetMeasuredCartPose(currentCartPose);
         FRI->GetMeasuredJointPositions(currentjointpos) ;
-        Vec q=float_2_Vec(currentjointpos,7) ;
+        Vec q=float_To_Vec(currentjointpos,7) ;
         x=GetTranslation(currentCartPose) ; R=GetRotationMatrix(currentCartPose) ;
 
 
@@ -178,10 +177,7 @@ vector< std::vector <float> > Kuka_MoveCartesian_MinJerk(FastResearchInterface *
     }
 
     FRI->GetMeasuredCartPose(currentCartPose);
-
     FRI->SetCommandedCartPose(currentCartPose);
-
-
     std::cout << "Cartesian Position reached..." << std::endl;
     cout<<"Current Cartesisian position: \n "  << GetTranslation(currentCartPose)	<<endl ;
     cout<<"Desired Final GOal: \n "  << x_df	<<endl ;
@@ -195,7 +191,7 @@ vector< std::vector <float> > Kuka_MoveCartesian_MinJerk(FastResearchInterface *
 
 int MoveCartesian_MinJerk_FullPose(FastResearchInterface *FRI, float tot_time, float dt, Vec x_df, Quaterniond quat_df) {
 
-    // Moves to a full 3d Pose (position +orientation)
+    // Moves to a full 3D Pose (position +orientation)
 
     printf("Moving to Desired Cartesian Position and Orientation with a minimum Jerk Trajectorty  \n");
     float CartStiffnessValues[FRI_CART_VEC],  CartDampingValues[FRI_CART_VEC], CommandedForcesAndTorques[FRI_CART_VEC] ;
@@ -261,7 +257,7 @@ int MoveCartesian_MinJerk_FullPose(FastResearchInterface *FRI, float tot_time, f
                   CartDampingValues[i]=(float)0.7;
         }
 
-        Set_Desired_Pose_FRI(R_d,x_d,commCartPose);
+        SetDesiredPoseFRI(R_d,x_d,commCartPose);
         FRI->SetCommandedCartStiffness(CartStiffnessValues);
         FRI->SetCommandedCartDamping(CartDampingValues);
         FRI->SetCommandedCartPose(commCartPose);
@@ -273,7 +269,7 @@ int MoveCartesian_MinJerk_FullPose(FastResearchInterface *FRI, float tot_time, f
 
 
        err_full.head(3)=x-x_df ;
-       err_full.tail(3)=Quart_Orient_err(R,R_df) ;
+       err_full.tail(3)=QuartOrientErr(R,R_df) ;
 
         t+=dt ;
 
@@ -307,9 +303,9 @@ int MoveCartesian_MinJerk_FullPose(FastResearchInterface *FRI, float tot_time, f
 
 int MoveCartesian_Trajectory_FullPose(FastResearchInterface *FRI, string des_traj_file,string Save_Data_dir) {
 
-    // Moves to a full 3d Pose (position +orientation)
+    // Moves to a full 3d Pose (position +orientation) trajectory specified in file
 
-    printf("Moving to Desired Cartesian Position and Orientation with a minimum Jerk Trajectorty  \n");
+    printf("Moving to Desired Cartesian Position and Orientation with a Desired Trajectorty  \n");
     float CartStiffnessValues[FRI_CART_VEC],  CartDampingValues[FRI_CART_VEC], CommandedForcesAndTorques[FRI_CART_VEC] ;
     float currentCartPose[FRI_CART_FRM_DIM], commCartPose[FRI_CART_FRM_DIM],currentjointpos[7];
 
@@ -396,7 +392,7 @@ int MoveCartesian_Trajectory_FullPose(FastResearchInterface *FRI, string des_tra
         R=  GetRotationMatrix(currentCartPose) ;
         Matrix3d R_d = q_des.normalized().toRotationMatrix() ;
 
-        Set_Desired_Pose_FRI(R_d,x_d,commCartPose);
+        SetDesiredPoseFRI(R_d,x_d,commCartPose);
 
         FRI->SetCommandedCartStiffness(CartStiffnessValues);
         FRI->SetCommandedCartDamping(CartDampingValues);
@@ -458,7 +454,7 @@ int MoveCartesian_Trajectory_FullPose(FastResearchInterface *FRI, string des_tra
 
 
 
-void Set_Desired_Pose_FRI(Mat Rot_d,Vec x_d,float *CartPose_d){
+void SetDesiredPoseFRI(Mat Rot_d,Vec x_d,float *CartPose_d){
 
     int tot_count=0 ;
 
@@ -672,7 +668,7 @@ Vec GetTranslation(float *CartPose){
 
 
 
-Mat Convert_Jacobian_2Mat(float ** Jacobian){
+Mat ConvertJacobianToMat(float ** Jacobian){
 
     Mat output(6,7) ;
 
@@ -689,7 +685,7 @@ Mat Convert_Jacobian_2Mat(float ** Jacobian){
 
 }
 
-Mat Convert_MassMat_2Mat(float ** Mass){
+Mat ConvertMassMatToMat(float ** Mass){
 
     Mat output(7,7) ;
 
@@ -708,7 +704,7 @@ Mat Convert_MassMat_2Mat(float ** Mass){
 
 
 
-Vec float_2_Vec(float *inp,int size){
+Vec float_To_Vec(float *inp,int size){
 
     Vec out(size) ;
 
@@ -720,7 +716,7 @@ Vec float_2_Vec(float *inp,int size){
 
 }
 
-Mat Tool_2_World_Jacobian(Mat Jac_tool,Mat Rot){
+Mat Tool_To_WorldJacobian(Mat Jac_tool,Mat Rot){
     Mat Jac_world=Jac_tool ;
     Mat zeros=MatrixXd::Zero(3,3);
     Mat Trans(6,6) ;
@@ -734,7 +730,7 @@ Mat Tool_2_World_Jacobian(Mat Jac_tool,Mat Rot){
 
 }
 
-Vec Quart_Orient_err(Mat R_a, Mat R_d){
+Vec QuartOrientErr(Mat R_a, Mat R_d){
 
     Eigen::Matrix3d R_aa=R_a;
     Eigen::Matrix3d R_dd = R_d;
