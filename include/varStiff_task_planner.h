@@ -3,7 +3,7 @@
 #include "base_planner.h"
 #include "first_order_tank.h"
 
-class VarStiffTaslPlanner:public BasePlanner{
+class VarStiffTaskPlanner:public BasePlanner{
 
 private:
 
