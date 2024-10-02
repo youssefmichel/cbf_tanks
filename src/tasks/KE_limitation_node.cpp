@@ -19,6 +19,9 @@
 #include "utility_fri.h"
 #include <TypeIRML.h>
 
+
+#include "kinetic_lim_task_planner.h"
+
 #include "boost/filesystem.hpp"
 using namespace boost::filesystem;
 
@@ -159,9 +162,19 @@ int main(int argc, char *argv[])
             MoveCartesian_MinJerk_FullPose( FRI, 2, FRI->GetFRICycleTime(), x_d,  q_init_des) ;
             break ;}
 
-
         case 's':
-        case 'S': {
+        case 'S':{
+            KineticEnergyTaskPlanner MyKineticPlanner ;
+            MyKineticPlanner.Init(packPath) ;
+            MyKineticPlanner.Run(10.0);
+            MyKineticPlanner.Terminate();
+
+            break ;
+        }
+
+
+        case 'w':
+        case 'W': {
 
             // Kinetic Energy Limitation
             FRI->GetMeasuredCartPose(currentCartPose);
@@ -187,19 +200,19 @@ int main(int argc, char *argv[])
                 realtype  dt=FRI->GetFRICycleTime() ;
                 CBFTank *MyCBF_Tank=new CBFTank() ; ;
                 MyCBF_Tank->Initiliaze(0.002,ActivateTank) ;
+
                 FRI->GetMeasuredJointPositions(currentJointPosition);
                 FRI->GetMeasuredCartPose(currentCartPose);
                 FRI->GetMeasuredCartPose( CartPose_init);
-
 
                 realtype K_transl=800 ;
                 if(! ros::param::get("K_transl",K_transl)) {
                     ROS_WARN("Stiffness Param not found !!");
                 }
 
-                for (i = 0; i < NUMBER_OF_CART_DOFS; i++)
+                for (int i = 0; i < NUMBER_OF_CART_DOFS; i++)
                 {
-                    if (i==0 || i==1 || i==2){
+                    if (i<3){
                         CartStiffnessValues[i] =(float)0.01;
                         CartDampingValues[i]=(float)0.0;
                     }
@@ -252,14 +265,17 @@ int main(int argc, char *argv[])
                     FRI->GetCurrentMassMatrix(ptr_Inertia);
                     Mat M=ConvertMassMatToMat(ptr_Inertia) ;
                     Mat Rot_mat=GetRotationMatrix(currentCartPose) ;
+
                     Vec x_dot=(x-x_prev)/dt ;
                     x_prev=x ;
                     Vec q_dot=(q-q_prev)/dt ;
                     q_prev=q ;
+
                     Vec x_dot_filt=low_pass( x_dot, x_dot_filt_prev,20,FRI->GetFRICycleTime() ) ;
                     x_dot_filt_prev=x_dot_filt ;
                     Vec q_dot_filt=low_pass( q_dot, q_dot_filt_prev,20,FRI->GetFRICycleTime() ) ;
                     q_dot_filt_prev=q_dot_filt ;
+
                     min_jerk_profile.Update(time_elap);
                     Vec fac= K_transl*min_jerk_profile.GetDesiredPos() ;
                     realtype k_des= fac(0);

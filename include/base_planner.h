@@ -55,7 +55,9 @@ protected:
     Vec x_d_ ;
     Vec x_prev_ ;
     Vec x_dot_filt_prev_ ;
-    MinJerk *min_jerk_profile_;
+    MinJerk min_jerk_profile_;
+    realtype K_transl_ ;
+    realtype D_transl_ ;
 
 
 public:
@@ -116,7 +118,8 @@ public:
 
 
         virtual void Run(realtype duration) =0;
-        virtual void LogData()  {
+        void Terminate()  {
+
         for(int i=0;i <3;i++){
 
             CommandedForcesAndTorques_[i]=0.0 ;

@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
             ForceTaskPlanner MyForcePlanner ;
             MyForcePlanner.Init(packPath) ;
             MyForcePlanner.Run(10.0);
-            MyForcePlanner.LogData();
+            MyForcePlanner.Terminate();
 
             break ;
         }

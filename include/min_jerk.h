@@ -19,6 +19,9 @@ public:
         MinJerk( realtype dt_, realtype t_f_, Vec x0_, Vec xf_);
         void Update(realtype t);
         Vec GetDesiredPos();
+        MinJerk(){
+        }
+        ~MinJerk(){}
 
 };
 

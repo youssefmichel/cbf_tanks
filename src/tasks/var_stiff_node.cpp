@@ -19,8 +19,10 @@
 
 #include "utility_fri.h"
 #include <TypeIRML.h>
-
 #include "boost/filesystem.hpp"
+
+#include "varStiff_task_planner.h"
+
 using namespace boost::filesystem;
 
 
@@ -132,15 +134,22 @@ int main(int argc, char *argv[])
             break ;}
 
         case 's':
-        case 'S': {
+        case 'S':{
+            VarStiffTaslPlanner MyVarStiffPlanner ;
+            MyVarStiffPlanner.Init(packPath) ;
+            MyVarStiffPlanner.Run(10.0);
+            MyVarStiffPlanner.Terminate();
+
+            break ;
+        }
+
+        case 'w':
+        case 'W': {
 
             // Time varying Stiffness Use Case
             FRI->GetMeasuredCartPose(currentCartPose);
             printf("       please enter Demo Number \n");
-            char n ;
-            n	=	WaitForKBCharacter(NULL);
-            printf("\n\n\n");
-            std::string ss; ss.push_back(n);
+
             if(startCartImpedanceCtrl(FRI,currentCartPose)==0){
 
                 char order='2' ;
