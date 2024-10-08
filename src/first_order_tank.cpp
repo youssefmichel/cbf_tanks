@@ -64,7 +64,7 @@ realtype FirstOrderTank::UpdateTank(realtype Pow_des) {
 }
 
 
-realtype FirstOrderTank::GetTankState(){
+realtype FirstOrderTank::GetTankState() const{
     return E_tank_ ;
 }
 
@@ -84,7 +84,7 @@ bool FirstOrderTankCBF::Initiliaze(double dt,int activate_tank) {
 }
 
 
-realtype FirstOrderTankCBF::Get_Pow_opt(){
+realtype FirstOrderTankCBF::Get_Pow_opt() const{
     return Pow_opt_ ;
 }
 
@@ -104,7 +104,7 @@ realtype FirstOrderTankCBF::UpdateTank(realtype Pow_des) {
 
 }
 
-realtype FirstOrderTankCBF::GetTankState() {
+realtype FirstOrderTankCBF::GetTankState() const {
 
 return 0.5*x_tank_*x_tank_ ;
 }

@@ -28,7 +28,7 @@ realtype beta_ ;
 public:
 
 
-    realtype GetTankState() ;
+    realtype GetTankState() const ;
     realtype UpdateTank(realtype Pow_des) override;
     bool Initiliaze(double dt,int activate_tank) override ;
 
@@ -48,8 +48,8 @@ private:
 public:
     realtype UpdateTank(realtype Pow_des) override;
     bool Initiliaze(double dt,int activate_tank) override ;
-    realtype Get_Pow_opt() ;
-    realtype GetTankState() ;
+    realtype Get_Pow_opt() const;
+    realtype GetTankState() const;
 
 
 } ;

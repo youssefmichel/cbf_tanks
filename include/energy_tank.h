@@ -22,9 +22,6 @@ class EnergyTank{
     ~EnergyTank(){}
 
 
-
-
-
 };
 
 #endif

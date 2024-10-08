@@ -146,11 +146,11 @@ realtype CBFTank::smooth_sigma_map(realtype P, realtype P_min, realtype P_max,re
 }
 
 
-realtype CBFTank::get_s_cbf(){
+realtype CBFTank::get_s_cbf() const{
     return s_cbf_ ;
 }
 
-realtype CBFTank::get_s_cbf_dot(){
+realtype CBFTank::get_s_cbf_dot() const{
     return s_cbf_dot_ ;
 }
 

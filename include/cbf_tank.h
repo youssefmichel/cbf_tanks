@@ -50,8 +50,8 @@ public:
     bool Initiliaze(double dt_ ,int ACTIVATE_TANK) override;
     realtype UpdateTank(realtype Pow_des) override ;
     realtype compute_u_cbf(realtype Pow_des) ;
-    realtype get_s_cbf() ;
-    realtype get_s_cbf_dot() ;
+    realtype get_s_cbf() const ;
+    realtype get_s_cbf_dot() const ;
     void set_Pow_limt(realtype P_max) ;
     realtype smooth_sigma_map(realtype P, realtype P_min, realtype P_max,realtype k_f) ;
 
